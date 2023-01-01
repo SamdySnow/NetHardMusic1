@@ -21,15 +21,15 @@ public class Add_Song extends AppCompatActivity {
     private Button btnADD;
     private Button btnINIT;
 
-    String path = "/data/data/com.jsj.txh/MusicFiles/M04.mp3";
-    String lrc_path = "/data/data/com.jsj.txh/Lyrics/L04.txt";
-    String song_name = "星球上的追溯诗";
-    String album_name = "Girls POP Vol.2";
-    String album_cover_path = "/data/data/com.jsj.txh/AlbumCover/C04.jpg";
-    String singer_name = "熊子/味素";
+    String path = "/data/data/com.jsj.txh/MusicFiles/M08.mp3";
+    String lrc_path = "/data/data/com.jsj.txh/Lyrics/L08.txt";
+    String song_name = "言って。";
+    String album_name = "夏草が邪魔をする";
+    String album_cover_path = "/data/data/com.jsj.txh/AlbumCover/C08.jpg";
+    String singer_name = "ヨルシカ";
 
     //TODO This Class ONLY FOR TESTING!
-    Song TEST_CLASS_SONG = new Song(song_name,path,album_name,singer_name,album_cover_path,lrc_path,true);
+    Song TEST_CLASS_SONG = new Song(song_name,path,album_name,singer_name,album_cover_path,lrc_path,false);
 
 
     @Override

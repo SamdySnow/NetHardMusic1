@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 public class PlayerService extends Service {
     private static final String TAG = "PlayingService";
+    private Song now_playing;
     MediaPlayer mediaPlayer;
     @Nullable
     @Override
@@ -43,7 +44,9 @@ public class PlayerService extends Service {
         return 0;
     }
 
-    public void play(String path){
+    public void play(Song song){
+        String path = song.getFile_path();
+        this.now_playing = song;
         try{
             if (mediaPlayer == null) {
                 Log.i(TAG,"Start Play");
@@ -120,8 +123,8 @@ public class PlayerService extends Service {
     }
 
      class PlayerBinder extends Binder{
-        public void playerPlay(String path){
-            play(path);
+        public void playerPlay(Song song){
+            play(song);
         }
         public int playerGetCurrentPosition(){
             return getCurrentPosition();
@@ -146,6 +149,9 @@ public class PlayerService extends Service {
         }
         public void playerStop(){
             stop();
+        }
+        public String getHello(){
+            return "Hello Service!";
         }
     }
 }

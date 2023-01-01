@@ -55,6 +55,7 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
             //Log.i("T-","T-" + String.valueOf(rem));
             if(rem <= 0){
                 playNext();
+                //Log.i("T-","T-" + rem + " ms  Play Next");
             }
             String cd = '-' + formatTimeStamp(rem);
             String full = formatTimeStamp(playerBinder.playerGetMusicLength());
@@ -274,7 +275,7 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
             ivAlbum_cover.setImageBitmap(now_playing.getAlbum_cover());
             tvAlbum_Name.setText(now_playing.getAlbum_name()  + " - " + now_playing.getSinger_name());
             tvSong_Name.setText(now_playing.getSong_name());
-            playerBinder.playerPlay(now_playing.getFile_path());
+            playerBinder.playerPlay(now_playing);
             initSeekbar();
             updateProgress();
         }
@@ -283,7 +284,7 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
             ivAlbum_cover.setImageBitmap(now_playing.getAlbum_cover());
             tvAlbum_Name.setText(now_playing.getAlbum_name()  + " - " + now_playing.getSinger_name());
             tvSong_Name.setText(now_playing.getSong_name());
-            playerBinder.playerPlay(now_playing.getFile_path());
+            playerBinder.playerPlay(now_playing);
             initSeekbar();
             updateProgress();
         }
