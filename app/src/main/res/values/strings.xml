@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">黄易云音乐</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="song_name_test">NameTest (feat.Android)</string>
+    <string name="previous">Previous</string>
+    <string name="play_puase">Play/Puase</string>
+    <string name="play_pause">Play/Pause</string>
+    <string name="next">Next</string>
+    <string name="favorite">Favorite</string>
+    <string name="lyrics">Lyrics</string>
+    <string name="albumnametest">AlbumNameTest</string>
+    <string name="Lrc_Test">Lyrics Test Lyrics Test Lyrics</string>
+    <string name="album_preview">Album Preview</string>
+    <string name="Quot_Mark_SBC">“</string>
+    <string name="Quot_Mark_R_SBC">”</string>
+</resources>
