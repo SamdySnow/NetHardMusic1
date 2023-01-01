@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class Index extends AppCompatActivity {
@@ -17,6 +18,8 @@ public class Index extends AppCompatActivity {
     private PlayerConnection playerConnection;
 
     private TextView tvNowPlaying;
+    private RelativeLayout taNowPlaying;
+    private RelativeLayout taAllSongs;
 
     private final Handler handler = new Handler(msg -> {
         if (msg.what == 110) {
@@ -37,6 +40,20 @@ public class Index extends AppCompatActivity {
         bindService(intent,playerConnection,BIND_AUTO_CREATE);
 
         this.tvNowPlaying = this.findViewById(R.id.index_now_playing);
+        this.taNowPlaying = this.findViewById(R.id.ta_Now_Playing);
+        this.taAllSongs = this.findViewById(R.id.ta_all_music);
+
+        taNowPlaying.setOnClickListener(view -> {
+            Intent intent1 = new Intent(Index.this,NowPlaying_Activity.class);
+            startActivity(intent1);
+        });
+
+        taAllSongs.setOnClickListener(view -> {
+            Intent intent1 = new Intent(Index.this,AllSongs.class);
+            startActivity(intent1);
+        });
+
+
 
         //updateNowPlaying();
 
@@ -47,9 +64,16 @@ public class Index extends AppCompatActivity {
             @Override
             public void run() {
                 while(!interrupted()){
-                    String Hello = playerBinder.getHello();
+                    String text = "";
+                    if (playerBinder.getNowPlaying() == null){
+                        text = "Not Playing";
+                    }else {
+                        String name = playerBinder.getNowPlaying().getSong_name();
+                        String singer = playerBinder.getNowPlaying().getSinger_name();
+                        text = name + " - " + singer;
+                    }
                     Message message = Message.obtain();
-                    message.obj = Hello;
+                    message.obj = text;
                     message.what = 110;
                     handler.sendMessage(message);
                     try {

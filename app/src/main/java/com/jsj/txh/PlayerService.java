@@ -112,6 +112,8 @@ public class PlayerService extends Service {
         }
     }
 
+
+
     @Override
     public void onDestroy() {
         if (this.mediaPlayer != null){
@@ -153,5 +155,8 @@ public class PlayerService extends Service {
         public String getHello(){
             return "Hello Service!";
         }
+        public Song getNowPlaying(){
+            return now_playing;
+         }
     }
 }

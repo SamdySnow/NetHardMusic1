@@ -16,6 +16,7 @@
         android:dividerPadding="0dp"
         >
         <RelativeLayout
+            android:visibility="visible"
             android:layout_marginBottom="15dp"
             android:id="@+id/ta_Now_Playing"
             android:layout_width="match_parent"

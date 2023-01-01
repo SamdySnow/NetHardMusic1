@@ -14,6 +14,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +42,10 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
     //private List<Song> play_list;
     private Song now_playing;
     private ImageView add2fav;
+    private LinearLayout taBack;
     DatabaseOperator operator = new DatabaseOperator();
+
+    String TAG = "NPA LifeCycle";
 
     List<Song> playList = operator.getAllSong();
 
@@ -79,6 +83,7 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG,"OnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.now_playing);
         this.tvSong_Name = this.findViewById(R.id.tvSongName_NowPlaying);
@@ -100,8 +105,11 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
         this.add2fav = this.findViewById(R.id.imAdd2Fav);
         this.tvShuffle = this.findViewById(R.id.tvShuffle);
         this.tvLyrics.setFocusable(true);
+        this.taBack = this.findViewById(R.id.ta_now_play_back);
 
         this.now_playing = playList.get(player_index);
+        Log.i(TAG,"play index = " + player_index);
+
 
         tvPP.setOnClickListener(view -> {
             if (playerBinder.playerIsPlayerNull()) {
@@ -178,10 +186,17 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
                 isFromUser[0] = false;
             }
         });
+        taBack.setOnClickListener(view ->{
+
+        });
 
     }///onCreate()
 
-
+    @Override
+    protected void onResume() {
+        Log.i(TAG,"onResume");
+        super.onResume();
+    }
 
     private void initSeekbar(){
         int musicWidth = playerBinder.playerGetMusicLength();
