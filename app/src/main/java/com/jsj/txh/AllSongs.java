@@ -2,10 +2,16 @@ package com.jsj.txh;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -18,13 +24,32 @@ import java.util.Map;
 
 public class AllSongs extends AppCompatActivity {
     DatabaseOperator operator = new DatabaseOperator();
+    private PlayerConnection playerConnection;
+    PlayerService.PlayerBinder playerBinder;
+
+    private class PlayerConnection implements ServiceConnection {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+
+            playerBinder = (PlayerService.PlayerBinder) iBinder;
+
+        }
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_songs);
 
+        this.playerConnection = new PlayerConnection();
+        Intent intent = new Intent(this, PlayerService.class);
+        bindService(intent,playerConnection,BIND_AUTO_CREATE);
+
         List<Song> playlist = operator.getAllSong();
+        List<Integer> playlist_id = new ArrayList<>();
 
         List<Map<String,Object>> list = new ArrayList<>();
 
@@ -34,6 +59,7 @@ public class AllSongs extends AppCompatActivity {
             item.put("name",s.getSong_name());
             item.put("about",s.getAlbum_name() + " - " + s.getSinger_name());
             list.add(item);
+            playlist_id.add(s.getId());
         }
 
         SimpleAdapter adapter = new SimpleAdapter(this,
@@ -53,5 +79,15 @@ public class AllSongs extends AppCompatActivity {
 
         ListView listView = this.findViewById(R.id.all_songs_list);
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.i("ListView Click","Clicked");
+                playerBinder.playerInitService(playlist_id,i);
+                Intent intent1 = new Intent(AllSongs.this,NowPlaying_Activity.class);
+                startActivity(intent1);
+            }
+        });
     }
 }

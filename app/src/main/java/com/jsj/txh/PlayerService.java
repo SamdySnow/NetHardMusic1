@@ -7,16 +7,43 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class PlayerService extends Service {
     private static final String TAG = "PlayingService";
     private Song now_playing;
+    private List<Song> playlist = new ArrayList<>();
+    private int player_index = 0;
+    private List<Integer> id_list = new ArrayList<>();
+    private DatabaseOperator operator = new DatabaseOperator();
+    private boolean shuffleOn;
+
+    public void setShuffleOn(boolean shuffleOn) {
+        this.shuffleOn = shuffleOn;
+        Log.i("Playback CTRL","Shuffle ON Set: " + this.shuffleOn);
+    }
+
+    private Thread thread;
+
+    private final Handler handler = new Handler(msg ->{
+        if(msg.what == 101){
+            playNext();
+            Log.i("Playback CTRL","Handle msg 101, Play NEXT");
+        }
+        return false;
+    });
+
     MediaPlayer mediaPlayer;
     @Nullable
     @Override
@@ -112,7 +139,88 @@ public class PlayerService extends Service {
         }
     }
 
+    public void playNext(){
+        if (mediaPlayer != null){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        Log.i("Playback CTRL","Shuffle Switch: " + shuffleOn);
+        if (shuffleOn){
+            do{
+                int nextInt = new Random().nextInt(playlist.size());
+                Log.i("RANDOM","Get Random " + nextInt + " / " + playlist.size());
+                if (nextInt != player_index){
+                    player_index = nextInt;
+                    break;
+                }
+            }while (true);
 
+            Log.i("Playback CTRL","Shuffle ON INDEX: " + player_index);
+        }else {
+            if (++player_index >= playlist.size()){
+                player_index = 0;
+            }
+        }
+        Log.i("Playback CTRL","PlayNext at INDEX:  " + player_index);
+        play(playlist.get(player_index));
+    }
+    public void playPrevious(){
+        if(mediaPlayer != null){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        if (--player_index < 0){
+            player_index = playlist.size() - 1;
+        }
+        play(playlist.get(player_index));
+    }
+
+    public void initService(List<Integer> playlist_id, int player_index){
+
+        this.player_index = player_index;
+        if (mediaPlayer != null){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        for (int i : playlist_id){
+            this.playlist.add(operator.getSongByID(i));
+        }
+        play(playlist.get(player_index));
+        autoNext();
+    }
+
+    public boolean isShuffleOn() {
+        return shuffleOn;
+    }
+
+    private void autoNext(){
+        this.thread = new Thread(){
+            @Override
+            public void run() {
+                Log.i("THREAD","auto next thread created");
+                while (!interrupted()){
+                    int rem = getMusicLength() - getCurrentPosition();
+                    Message message = Message.obtain();
+                    //message.obj = rem;
+                    if (rem <= 250){
+                        Log.i("Playback CTRL","-T < 0" + " SEND MESSAGE 101");
+                        message.what = 101;
+                        handler.sendMessage(message);
+                    }
+                    try{
+                        sleep(250);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                super.run();
+            }
+        };
+        this.thread.start();
+    }
 
     @Override
     public void onDestroy() {
@@ -157,6 +265,21 @@ public class PlayerService extends Service {
         }
         public Song getNowPlaying(){
             return now_playing;
-         }
+        }
+        public void playerInitService(List<Integer> id_list, int index){
+            initService(id_list,index);
+        }
+        public void playerSetShuffle(boolean shuffle){
+            setShuffleOn(shuffle);
+        }
+        public boolean playerIsShuffleOn(){
+            return isShuffleOn();
+        }
+        public void playerPlayNext(){
+            playNext();
+        }
+        public void playerPlayPrevious(){
+            playPrevious();
+        }
     }
 }

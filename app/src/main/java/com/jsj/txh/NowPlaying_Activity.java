@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -47,9 +49,9 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
 
     String TAG = "NPA LifeCycle";
 
-    List<Song> playList = operator.getAllSong();
+    //List<Song> playList = operator.getAllSong();
 
-    int player_index = 0;
+    //int player_index = 0;
     boolean shuffleOn = false;
 
     private final Handler handler = new Handler(msg -> {
@@ -57,9 +59,13 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
             seekBar.setProgress(playerBinder.playerGetCurrentPosition());
             int rem = playerBinder.playerGetMusicLength() - playerBinder.playerGetCurrentPosition();
             //Log.i("T-","T-" + String.valueOf(rem));
-            if(rem <= 0){
-                playNext();
+            if(playerBinder.playerGetCurrentPosition() < 800 && playerBinder.playerGetCurrentPosition() >=10 ){
+                Log.i("AUTO NEXT","Play Next :" + playerBinder.playerGetCurrentPosition());
+                //playerBinder.playerPlayNext();
                 //Log.i("T-","T-" + rem + " ms  Play Next");
+                //playNext();
+                this.now_playing = playerBinder.getNowPlaying();
+                initUI();
             }
             String cd = '-' + formatTimeStamp(rem);
             String full = formatTimeStamp(playerBinder.playerGetMusicLength());
@@ -80,6 +86,8 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
         //super.handleMessage(msg);
         return false;
     });
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,36 +115,30 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
         this.tvLyrics.setFocusable(true);
         this.taBack = this.findViewById(R.id.ta_now_play_back);
 
-        this.now_playing = playList.get(player_index);
-        Log.i(TAG,"play index = " + player_index);
-
 
         tvPP.setOnClickListener(view -> {
-            if (playerBinder.playerIsPlayerNull()) {
-                //第一次读取歌曲文件信息
-                playSong(now_playing);
+            if (playerBinder.playerIsPlaying()){
+                //pause stream
+                playerBinder.playerPause();
+                tvPP.setImageDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.pp));
+                Toast.makeText(getApplicationContext(),"Paused",Toast.LENGTH_SHORT).show();
+            }
+            else {
+                playerBinder.playerResume();
+                tvPP.setImageDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.pause));
+                Toast.makeText(getApplicationContext(),"Play",Toast.LENGTH_SHORT).show();
 
-            }else {
-                if (playerBinder.playerIsPlaying()){
-                    //pause stream
-                    playerBinder.playerPause();
-                    tvPP.setImageDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.pp));
-                    Toast.makeText(getApplicationContext(),"Paused",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    playerBinder.playerResume();
-                    tvPP.setImageDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.pause));
-                    Toast.makeText(getApplicationContext(),"Play",Toast.LENGTH_SHORT).show();
-                }
             }
         });
 
         tvNext.setOnClickListener(view -> {
             playNext();
+            this.now_playing = playerBinder.getNowPlaying();
         });
 
         tvPrevious.setOnClickListener(view -> {
             playPrevious();
+            this.now_playing = playerBinder.getNowPlaying();
         });
 
         tvShuffle.setOnClickListener(view -> {
@@ -149,6 +151,7 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"Shuffle ON",Toast.LENGTH_SHORT).show();
             }
             shuffleOn = !shuffleOn;
+            playerBinder.playerSetShuffle(shuffleOn);
         });
 
         add2fav.setOnClickListener(view -> {
@@ -187,7 +190,7 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
             }
         });
         taBack.setOnClickListener(view ->{
-
+            finish();
         });
 
     }///onCreate()
@@ -222,6 +225,7 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
                 super.run();
             }
         };
+        Log.i("THREAD","update progress thread created");
         this.thread.start();
     }
 
@@ -244,9 +248,11 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
 
             playerBinder = (PlayerService.PlayerBinder) iBinder;
 
-            if (playerBinder.playerIsPlayerNull()){
-                playSong(now_playing);
-            }
+            now_playing = playerBinder.getNowPlaying();
+            shuffleOn = playerBinder.playerIsShuffleOn();
+
+            updateProgress();
+            initUI();
         }
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
@@ -254,15 +260,9 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
     }
 
     private void playNext(){
-        if (++player_index >= playList.size()){
-            player_index = 0;
-        }
-        if (shuffleOn){
-            Random random = new Random();
-            player_index = random.nextInt(playList.size());
-        }
-        now_playing = playList.get(player_index);
-        playSong(now_playing);
+        playerBinder.playerPlayNext();
+        this.now_playing = playerBinder.getNowPlaying();
+        initUI();
         Toast.makeText(getApplicationContext(),"Play Next",Toast.LENGTH_SHORT).show();
     }
 
@@ -271,38 +271,30 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
             playerBinder.playerSeekTo(0);
             Toast.makeText(getApplicationContext(),"Back to Start",Toast.LENGTH_SHORT).show();
         }else {
-            if(--player_index < 0){
-                player_index = playList.size()-1;
-            }
-            now_playing = playList.get(player_index);
-            playSong(now_playing);
+           playerBinder.playerPlayPrevious();
             Toast.makeText(getApplicationContext(),"Play Previous",Toast.LENGTH_SHORT).show();
         }
+        this.now_playing = playerBinder.getNowPlaying();
+        initUI();
     }
 
-    private void playSong(Song song){
-        if(song.isFavorite()){
-            add2fav.setImageDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.fav));
+    private void initUI(){
+        Log.i("NPA LifeCycle","INIT UI");
+        if (shuffleOn){
+            tvShuffle.setImageDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.shuffle_on));
         }else {
-            add2fav.setImageDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.add2fav));
+            tvShuffle.setImageDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.shuffle));
         }
-        if (playerBinder.playerIsPlayerNull()) {
-            ivAlbum_cover.setImageBitmap(now_playing.getAlbum_cover());
-            tvAlbum_Name.setText(now_playing.getAlbum_name()  + " - " + now_playing.getSinger_name());
-            tvSong_Name.setText(now_playing.getSong_name());
-            playerBinder.playerPlay(now_playing);
-            initSeekbar();
-            updateProgress();
+        if(now_playing.isFavorite()){
+            add2fav.setImageDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.fav));
         }
         else {
-            playerBinder.playerStop();
-            ivAlbum_cover.setImageBitmap(now_playing.getAlbum_cover());
-            tvAlbum_Name.setText(now_playing.getAlbum_name()  + " - " + now_playing.getSinger_name());
-            tvSong_Name.setText(now_playing.getSong_name());
-            playerBinder.playerPlay(now_playing);
-            initSeekbar();
-            updateProgress();
+            add2fav.setImageDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.add2fav));
         }
+        ivAlbum_cover.setImageBitmap(now_playing.getAlbum_cover());
+        tvAlbum_Name.setText(now_playing.getAlbum_name()  + " - " + now_playing.getSinger_name());
+        tvSong_Name.setText(now_playing.getSong_name());
+        initSeekbar();
     }
 
     @Override

@@ -87,10 +87,29 @@ public class DatabaseOperator {
                 int isFavorite = cursor.getInt(7);
 
                 Song s = new Song(song_name, file_path, album_name, singer_name, album_cover_path, lyrics_path, isFavorite == 1);
+                s.setId(id);
                 res.add(s);
             } while (cursor.moveToNext());
         }
         cursor.close();
         return res;
+    }
+    public Song getSongByID(int id){
+        String sql = "SELECT * FROM MusicInfo WHERE id = ?";
+        Cursor cursor = database.rawQuery(sql,new String[]{String.valueOf(id)});
+        //int id = cursor.getInt(0);
+        cursor.moveToFirst();
+        String song_name = cursor.getString(1);
+        String file_path = cursor.getString(2);
+        String album_name = cursor.getString(3);
+        String singer_name = cursor.getString(4);
+        String album_cover_path = cursor.getString(5);
+        String lyrics_path = cursor.getString(6);
+        int isFavorite = cursor.getInt(7);
+
+        Song s = new Song(song_name, file_path, album_name, singer_name, album_cover_path, lyrics_path, isFavorite == 1);
+        s.setId(id);
+        cursor.close();
+        return s;
     }
 }

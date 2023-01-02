@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Song {
+    private int id;
     private String song_name;
     private String file_path;
     private String album_name;
@@ -26,6 +27,14 @@ public class Song {
     private List<String> lyrics_list;
     private boolean favorite;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public boolean isFavorite() {
         return favorite;
     }
@@ -35,6 +44,7 @@ public class Song {
     }
 
     public Song(String song_name, String file_path, String album_name, String singer_name, String album_cover_path, String lyrics_path,boolean favorite) {
+        this.id = -1;
         this.song_name = song_name;
         this.file_path = file_path;
         this.album_name = album_name;

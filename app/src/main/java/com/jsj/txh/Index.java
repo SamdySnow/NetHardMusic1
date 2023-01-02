@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,7 +24,14 @@ public class Index extends AppCompatActivity {
 
     private final Handler handler = new Handler(msg -> {
         if (msg.what == 110) {
-            tvNowPlaying.setText((CharSequence) msg.obj);
+            if (msg.obj == null){
+                taNowPlaying.setVisibility(View.GONE);
+                taNowPlaying.setClickable(false);
+            }else{
+                taNowPlaying.setVisibility(View.VISIBLE);
+                taNowPlaying.setClickable(true);
+                tvNowPlaying.setText((CharSequence) msg.obj);
+            }
         }
         //super.handleMessage(msg);
         return false;
@@ -66,8 +74,9 @@ public class Index extends AppCompatActivity {
                 while(!interrupted()){
                     String text = "";
                     if (playerBinder.getNowPlaying() == null){
-                        text = "Not Playing";
+                        text = null;
                     }else {
+                        taNowPlaying.setClickable(true);
                         String name = playerBinder.getNowPlaying().getSong_name();
                         String singer = playerBinder.getNowPlaying().getSinger_name();
                         text = name + " - " + singer;
