@@ -307,4 +307,14 @@ public class NowPlaying_Activity<now_playing> extends AppCompatActivity {
         unbindService(playerConnection);
         super.onDestroy();
     }
+
+    @Override
+    protected void onStop() {
+        if(this.thread != null){
+            if(!this.thread.isInterrupted()){
+                this.thread.interrupt();
+            }
+        }
+        super.onStop();
+    }
 }

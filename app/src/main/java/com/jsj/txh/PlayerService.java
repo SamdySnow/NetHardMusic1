@@ -54,7 +54,8 @@ public class PlayerService extends Service {
     }
 
     public int getMusicLength(){
-        if(this.mediaPlayer != null){
+        if(this.mediaPlayer != null && mediaPlayer.isPlaying()){
+            //Log.i("PlayerServices","Call getDuration :" + mediaPlayer.getDuration());
             return this.mediaPlayer.getDuration();
         }
         return 0;
@@ -72,6 +73,12 @@ public class PlayerService extends Service {
     }
 
     public void play(Song song){
+        if (this.thread != null){
+            if(!this.thread.isInterrupted()){
+                thread.interrupt();
+                Log.i("THREAD","AutoNext Thread destroyed!");
+            }
+        }
         String path = song.getFile_path();
         this.now_playing = song;
         try{
@@ -91,6 +98,7 @@ public class PlayerService extends Service {
         catch (Exception e){
             e.printStackTrace();
         }
+        autoNext();
     }
 
     public void pause(){
@@ -190,7 +198,7 @@ public class PlayerService extends Service {
         }
         play(playlist.get(player_index));
 
-        autoNext();
+        //autoNext();
     }
 
     public boolean isShuffleOn() {
@@ -201,20 +209,29 @@ public class PlayerService extends Service {
         this.thread = new Thread(){
             @Override
             public void run() {
+                int duration = 0xFFFFFF;
                 Log.i("THREAD","auto next thread created");
                 while (!interrupted()){
-                    int rem = getMusicLength() - getCurrentPosition();
-                    Message message = Message.obtain();
-                    //message.obj = rem;
-                    if (rem <= 250){
-                        Log.i("Playback CTRL","-T < 0" + " SEND MESSAGE 101");
-                        message.what = 101;
-                        handler.sendMessage(message);
-                    }
-                    try{
-                        sleep(250);
-                    }catch (Exception e){
-                        e.printStackTrace();
+                    if (mediaPlayer != null){
+                        int rem = 0xFFFFFF;
+                        try{
+                            rem = getMusicLength() - getCurrentPosition();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        Message message = Message.obtain();
+                        //message.obj = rem;
+                        if (rem <= 250 && getMusicLength() > 0){
+                            Log.i("Playback CTRL","-T < 0" + " SEND MESSAGE 101" + "Current Len: " + getMusicLength());
+                            message.what = 101;
+                            handler.sendMessage(message);
+                        }
+                        try{
+                            sleep(250);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
                     }
                 }
                 super.run();

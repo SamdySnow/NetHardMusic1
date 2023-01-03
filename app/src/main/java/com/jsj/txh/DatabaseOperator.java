@@ -8,7 +8,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseOperator {
 
@@ -137,5 +139,87 @@ public class DatabaseOperator {
         }
         cursor.close();
         return res;
+    }
+    public List<String> getAllSingers(){
+        List<String> res = new ArrayList<>();
+        String sql = "SELECT DISTINCT singer_name FROM MusicInfo";
+        Cursor cursor = database.rawQuery(sql,null);
+        cursor.moveToFirst();
+        do{
+            String item = cursor.getString(0);
+            res.add(item);
+        }while (cursor.moveToNext());
+        cursor.close();
+        return res;
+    }
+    public List<Song> getAllMusicBySinger(String singer){
+        List<Song> res = new ArrayList<>();
+        String sql = "SELECT * FROM MucisInfo WHERE singer_name = ?";
+        Cursor cursor = database.rawQuery(sql,new String[]{singer});
+        cursor.moveToFirst();
+
+        do {
+            int id = cursor.getInt(0);
+            String song_name = cursor.getString(1);
+            String file_path = cursor.getString(2);
+            String album_name = cursor.getString(3);
+            String singer_name = cursor.getString(4);
+            String album_cover_path = cursor.getString(5);
+            String lyrics_path = cursor.getString(6);
+            int isFavorite = cursor.getInt(7);
+
+            Song s = new Song(song_name, file_path, album_name, singer_name, album_cover_path, lyrics_path, isFavorite == 1);
+            s.setId(id);
+            res.add(s);
+
+        } while (cursor.moveToNext());
+        cursor.close();
+        return res;
+    }
+    public List<Map<String,String>> getALlAlbums(){
+        List<Map<String,String>> res = new ArrayList<>();
+        String sql = "SELECT DISTINCT album_name FROM MusicInfo";
+        Cursor cursor = database.rawQuery(sql,null);
+        cursor.moveToFirst();
+        do{
+            String album_name = cursor.getString(0);
+
+            String sql1 = "SELECT album_cover_path FROM MusicInfo WHERE album_name = ? LIMIT 1;";
+            Cursor cursor1 = database.rawQuery(sql1,new String[]{album_name});
+            cursor1.moveToFirst();
+            String album_cover_path = cursor1.getString(0);
+            cursor1.close();
+            Map<String,String> item = new HashMap<>();
+            item.put("album_name",album_name);
+            item.put("album_cover_path",album_cover_path);
+            res.add(item);
+        }while (cursor.moveToNext());
+        cursor.close();
+        return res;
+    }
+    public List<Song> getAllSongByAlbum(String album_name){
+        List<Song> res = new ArrayList<>();
+        String sql = "SELECT * FROM MusicInfo WHERE album_name = ?";
+        Cursor cursor = database.rawQuery(sql,new String[]{album_name});
+        cursor.moveToFirst();
+
+        do {
+            int id = cursor.getInt(0);
+            String song_name = cursor.getString(1);
+            String file_path = cursor.getString(2);
+            //String album_name = cursor.getString(3);
+            String singer_name = cursor.getString(4);
+            String album_cover_path = cursor.getString(5);
+            String lyrics_path = cursor.getString(6);
+            int isFavorite = cursor.getInt(7);
+
+            Song s = new Song(song_name, file_path, album_name, singer_name, album_cover_path, lyrics_path, isFavorite == 1);
+            s.setId(id);
+            res.add(s);
+
+        } while (cursor.moveToNext());
+        cursor.close();
+        return res;
+
     }
 }

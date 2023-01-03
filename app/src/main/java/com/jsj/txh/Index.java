@@ -22,6 +22,9 @@ public class Index extends AppCompatActivity {
     private RelativeLayout taNowPlaying;
     private RelativeLayout taAllSongs;
     private RelativeLayout taFav;
+    private RelativeLayout taAlbums;
+    private RelativeLayout taAbout;
+    private RelativeLayout taAdd;
 
     private final Handler handler = new Handler(msg -> {
         if (msg.what == 110) {
@@ -52,6 +55,15 @@ public class Index extends AppCompatActivity {
         this.taNowPlaying = this.findViewById(R.id.ta_Now_Playing);
         this.taAllSongs = this.findViewById(R.id.ta_all_music);
         this.taFav = this.findViewById(R.id.ta_Favorite);
+        this.taAbout = this.findViewById(R.id.ta_about);
+        this.taAlbums = this.findViewById(R.id.ta_albums);
+        this.taAdd = this.findViewById(R.id.ta_add_songs);
+
+        taAdd.setOnClickListener(view -> {
+            Intent intent1 = new Intent(Index.this,Add_Song.class);
+            startActivity(intent1);
+        });
+
 
         taNowPlaying.setOnClickListener(view -> {
             Intent intent1 = new Intent(Index.this,NowPlaying_Activity.class);
@@ -60,11 +72,22 @@ public class Index extends AppCompatActivity {
 
         taAllSongs.setOnClickListener(view -> {
             Intent intent1 = new Intent(Index.this,AllSongs.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("TAG",0);
+            bundle.putString("CONTENT","ALl Songs");
             startActivity(intent1);
         });
         //updateNowPlaying();
         taFav.setOnClickListener(view -> {
             Intent intent1 = new Intent(Index.this,FavoriteSong.class);
+            startActivity(intent1);
+        });
+        taAbout.setOnClickListener(view -> {
+            Intent intent1 = new Intent(Index.this,About.class);
+            startActivity(intent1);
+        });
+        taAlbums.setOnClickListener(view -> {
+            Intent intent1 = new Intent(Index.this,AllAlbums.class);
             startActivity(intent1);
         });
     }

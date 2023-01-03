@@ -48,7 +48,27 @@ public class AllSongs extends AppCompatActivity {
         Intent intent = new Intent(this, PlayerService.class);
         bindService(intent,playerConnection,BIND_AUTO_CREATE);
 
-        List<Song> playlist = operator.getAllSong();
+        List<Song> playlist = new ArrayList<>();
+
+        //TODO Switch intent and reuse this class
+        Intent intent1 = getIntent();
+        Bundle bundle = intent1.getExtras();
+        int tag = bundle.getInt("TAG");
+
+        switch (tag)
+        {
+            case 0:
+                playlist = operator.getAllSong();
+                break;
+            case 1:
+                String album_name = bundle.getString("CONTENT");
+                playlist = operator.getAllSongByAlbum(album_name);
+                break;
+            case 2:
+                String singer_name = bundle.getString("CONTENT");
+                playlist = operator.getAllMusicBySinger(singer_name);
+        }
+
         List<Integer> playlist_id = new ArrayList<>();
 
         List<Map<String,Object>> list = new ArrayList<>();

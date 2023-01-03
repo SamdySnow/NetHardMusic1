@@ -14,4 +14,7 @@
     <string name="album_preview">Album Preview</string>
     <string name="Quot_Mark_SBC">“</string>
     <string name="Quot_Mark_R_SBC">”</string>
+    <string name="github_address">An Opensource Program by\n\nSamdySnow\n\nGitHub: https://github.com/SamdySnow/NetHardMusic1</string>
+    <string name="versionCode">黄易云音乐\n\nV0.10.0 Alpha</string>
+    <string name="btn_about">ABOUT</string>
 </resources>
