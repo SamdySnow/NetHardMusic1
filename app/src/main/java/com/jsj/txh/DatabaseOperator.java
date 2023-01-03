@@ -112,4 +112,30 @@ public class DatabaseOperator {
         cursor.close();
         return s;
     }
+    public List<Song> getAllFavoriteSong(){
+        List<Song> res = new ArrayList<>();
+        String sql = "SELECT * FROM MusicInfo where favorite = 1";
+        Cursor cursor = database.rawQuery(sql,null);
+
+        if(cursor.getCount() != 0){
+            cursor.moveToFirst();
+
+            do {
+                int id = cursor.getInt(0);
+                String song_name = cursor.getString(1);
+                String file_path = cursor.getString(2);
+                String album_name = cursor.getString(3);
+                String singer_name = cursor.getString(4);
+                String album_cover_path = cursor.getString(5);
+                String lyrics_path = cursor.getString(6);
+                int isFavorite = cursor.getInt(7);
+
+                Song s = new Song(song_name, file_path, album_name, singer_name, album_cover_path, lyrics_path, isFavorite == 1);
+                s.setId(id);
+                res.add(s);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return res;
+    }
 }

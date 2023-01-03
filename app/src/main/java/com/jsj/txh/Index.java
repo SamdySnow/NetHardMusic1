@@ -21,6 +21,7 @@ public class Index extends AppCompatActivity {
     private TextView tvNowPlaying;
     private RelativeLayout taNowPlaying;
     private RelativeLayout taAllSongs;
+    private RelativeLayout taFav;
 
     private final Handler handler = new Handler(msg -> {
         if (msg.what == 110) {
@@ -50,6 +51,7 @@ public class Index extends AppCompatActivity {
         this.tvNowPlaying = this.findViewById(R.id.index_now_playing);
         this.taNowPlaying = this.findViewById(R.id.ta_Now_Playing);
         this.taAllSongs = this.findViewById(R.id.ta_all_music);
+        this.taFav = this.findViewById(R.id.ta_Favorite);
 
         taNowPlaying.setOnClickListener(view -> {
             Intent intent1 = new Intent(Index.this,NowPlaying_Activity.class);
@@ -60,11 +62,11 @@ public class Index extends AppCompatActivity {
             Intent intent1 = new Intent(Index.this,AllSongs.class);
             startActivity(intent1);
         });
-
-
-
         //updateNowPlaying();
-
+        taFav.setOnClickListener(view -> {
+            Intent intent1 = new Intent(Index.this,FavoriteSong.class);
+            startActivity(intent1);
+        });
     }
 
     private void updateNowPlaying(){

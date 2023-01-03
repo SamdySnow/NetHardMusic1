@@ -189,6 +189,7 @@ public class PlayerService extends Service {
             this.playlist.add(operator.getSongByID(i));
         }
         play(playlist.get(player_index));
+
         autoNext();
     }
 
