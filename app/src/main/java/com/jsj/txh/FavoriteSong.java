@@ -12,7 +12,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
@@ -24,6 +26,8 @@ public class FavoriteSong extends AppCompatActivity {
     DatabaseOperator operator = new DatabaseOperator();
     private PlayerConnection playerConnection;
     PlayerService.PlayerBinder playerBinder;
+
+    private LinearLayout taBack;
 
     private class PlayerConnection implements ServiceConnection {
         @Override
@@ -41,6 +45,11 @@ public class FavoriteSong extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite_song);
+
+        this.taBack = this.findViewById(R.id.ta_fav_songs_back);
+        taBack.setOnClickListener(view -> {
+            finish();
+        });
 
 
         this.playerConnection = new PlayerConnection();

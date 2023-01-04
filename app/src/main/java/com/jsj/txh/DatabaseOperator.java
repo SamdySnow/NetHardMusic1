@@ -154,7 +154,7 @@ public class DatabaseOperator {
     }
     public List<Song> getAllMusicBySinger(String singer){
         List<Song> res = new ArrayList<>();
-        String sql = "SELECT * FROM MucisInfo WHERE singer_name = ?";
+        String sql = "SELECT * FROM MusicInfo WHERE singer_name = ?";
         Cursor cursor = database.rawQuery(sql,new String[]{singer});
         cursor.moveToFirst();
 

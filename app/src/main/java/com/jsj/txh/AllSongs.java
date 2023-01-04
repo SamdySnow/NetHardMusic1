@@ -14,6 +14,7 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -26,6 +27,8 @@ public class AllSongs extends AppCompatActivity {
     DatabaseOperator operator = new DatabaseOperator();
     private PlayerConnection playerConnection;
     PlayerService.PlayerBinder playerBinder;
+
+    private LinearLayout taBack;
 
     private class PlayerConnection implements ServiceConnection {
         @Override
@@ -47,6 +50,11 @@ public class AllSongs extends AppCompatActivity {
         this.playerConnection = new PlayerConnection();
         Intent intent = new Intent(this, PlayerService.class);
         bindService(intent,playerConnection,BIND_AUTO_CREATE);
+
+        this.taBack = this.findViewById(R.id.ta_all_songs_back);
+        taBack.setOnClickListener(view -> {
+            finish();
+        });
 
         List<Song> playlist = new ArrayList<>();
 

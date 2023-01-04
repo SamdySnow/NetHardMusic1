@@ -10,7 +10,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="5dp">
 
         <LinearLayout
             android:id="@+id/ta_all_albums_back"

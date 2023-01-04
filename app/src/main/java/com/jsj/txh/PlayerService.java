@@ -188,6 +188,7 @@ public class PlayerService extends Service {
     public void initService(List<Integer> playlist_id, int player_index){
 
         this.player_index = player_index;
+        this.playlist.clear();
         if (mediaPlayer != null){
             mediaPlayer.stop();
             mediaPlayer.release();
