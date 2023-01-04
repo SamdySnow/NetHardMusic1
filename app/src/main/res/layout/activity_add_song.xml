@@ -14,49 +14,49 @@
             android:id="@+id/add_song_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter Song Name Here"/>
+            android:hint="@string/enter_song_name_here"/>
 
         <EditText
             android:id="@+id/add_album_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter Album Name Here"/>
+            android:hint="@string/enter_album_name_here"/>
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/add_album_path"
-            android:hint="Enter Album Image Path Here"/>
+            android:hint="@string/enter_album_image_path_here"/>
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/add_singer_name"
-            android:hint="Enter Singer Name Here"/>
+            android:hint="@string/enter_singer_name_here"/>
 
         <EditText
             android:id="@+id/add_song_path"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter Song File Path Here"/>
+            android:hint="@string/enter_song_file_path_here"/>
 
         <EditText
             android:id="@+id/add_lyrics_path"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter Lyrics File Path Here"/>
+            android:hint="@string/enter_lyrics_file_path_here"/>
 
         <Button
             android:id="@+id/btn_add_to_database"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add to Database"
+            android:text="@string/add_to_database"
             android:layout_gravity="end"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/add_activity_back"
-            android:text="Back"
+            android:text="@string/back"
             android:layout_gravity="start"
             android:layout_marginTop="50dp"/>
         <Button
@@ -66,14 +66,14 @@
             android:background="#66CCFF"
             android:layout_gravity="center"
             android:layout_marginVertical="50dp"
-            android:text="/////////   Create Database   /////////"/>
+            android:text="@string/create_database"/>
 
         <Button
             android:id="@+id/btn_del_database"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#FF0000"
-            android:text="//////////   Delete Database   ////////"
+            android:text="@string/delete_database"
             android:layout_gravity="center"
             android:textColor="#FFFFFF" />
 

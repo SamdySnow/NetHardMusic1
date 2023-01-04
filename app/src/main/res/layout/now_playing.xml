@@ -106,14 +106,14 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/comfortaa"
                 android:letterSpacing="0.2"
-                android:text="-1:10" />
+                android:text="@string/test_timeMinousT" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:fontFamily="@font/comfortaa"
-                android:text="/" />
+                android:text="@string/slash" />
 
 
             <TextView
@@ -123,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/comfortaa"
                 android:letterSpacing="0.2"
-                android:text="3:15"
+                android:text="@string/test_cimeDuration"
                 android:textAlignment="textStart" />
         </LinearLayout>
 

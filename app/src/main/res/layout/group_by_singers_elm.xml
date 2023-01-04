@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:paddingLeft="8dp"
         android:gravity="center_vertical"
-        android:text="Album Name Test"
+        android:text="@string/album_name_test"
         android:fontFamily="@font/comfortaa"
         android:textColor="#1D1D1C"/>
 
